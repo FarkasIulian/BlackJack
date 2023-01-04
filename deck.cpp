@@ -183,7 +183,7 @@ void CardDeck::showHand(Player p){
 void Game(){
     Player player,dealer;
     CardDeck Deck;
-    int opt,first=0;
+    int opt,first=0,bust=0;
     vector <int> aux;
     Deck.createDeck();
     aux=Deck.HitMe();  
@@ -222,15 +222,18 @@ void Game(){
                         dealer.sum+=aux[0];
                     cout<<"Dealer current total is: "<<dealer.sum<<endl;
                     if(dealer.sum>BUST){
-                        cout<<"DEALER BUSTED! "<<endl<<"Dealer total was: "<<dealer.sum;
+                        cout<<"DEALER BUSTED! "<<endl<<"Dealer total was: "<<dealer.sum<<endl;
                         win++;
+                        bust=1;
                         break;
                     }
                 }
                 else
                     break;
             }
-            if(player.sum>dealer.sum){
+            if(player.sum==dealer.sum && bust!=1)
+                cout<<"DRAW";
+            else if(player.sum>dealer.sum && bust!=1){
                 cout<<"YOU WON!"<<endl;
                 win++;
             }
@@ -242,6 +245,7 @@ void Game(){
         } 
         if(player.sum>BUST){
           cout<<"YOU BUSTED! "<<endl<<"Your total was: "<<player.sum<<endl;
+          bust=1;
           loss++;
           break;
         }
@@ -257,7 +261,21 @@ void Game(){
     else return;
 }
 
+void Rules(){
+    cout<<"\n\n\t\t\t     THE RULES FOR MY VERSION OF BLACKJACK ARE AS FOLLOWS: "<<endl;
+    cout<<"\t\t  1.The goal is for your total ( the sum of card values ) to get as close as possible to 21."<<endl;
+    cout<<"\t\t2.The cards values from 2 to 10 are their respective numbers and all the face cards ( except the ACE ) are worth 10 points."<<endl;
+    cout<<"\t\t  3.The ACE is worth 11 points, but if you draw and ACE and go over 21 then the ACE will be worth 1 point."<<endl;
+    cout<<"\t\t\t4.After you finish drawing your cards it will be the dealers turn to play."<<endl;
+    cout<<"\t\t\t  5.If you are closer to 21 than the dealer then you win."<<endl;
+    cout<<"\t\t\t\t\tPress any key to continue!"<<endl;
+    cout<<"\t\t\t\t\t\t      ";
+    getch();
+    system("CLS");
+}
+
 int main(){
+    Rules();
     Game();
     system("CLS");
     return 0;
