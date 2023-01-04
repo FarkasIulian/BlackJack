@@ -1,6 +1,10 @@
 #include <iostream>
+#include <time.h>
+#include <vector>
 using namespace std;
 //creating a deck of cards, assuming cards are placed on 4 rows of 13 columns each
+
+#define BUST 21
 
 enum class Suits{
     CLUBS,
@@ -84,10 +88,15 @@ struct Card{
         else 
             cout<<"|     |"<<endl;
 
-     }
+      }
     }
+};
 
-
+struct Player{
+    int sum=0;
+    int wins;
+    int losses;
+    vector <int> cards;
 };
 
 struct CardDeck{
@@ -119,45 +128,71 @@ struct CardDeck{
     }
 
     void printOne(int index){
-        cout<<arrCards[index].value;
         arrCards[index].PrintName();
         cout<<" of ";
         arrCards[index].PrintSuit();
         cout<<endl;
     }
+
     void drawOne(int index){
         arrCards[index].Draw();
     }
-    void PrintAll(){
-        for(int index=0;index<n;index++){
-            arrCards[index].PrintName();
-            cout<< " of ";
-            arrCards[index].PrintSuit();
-            cout<<endl;
-        }
-    }
-    void DrawAll(){     
-        for(int index=0;index<n;index++){
-            arrCards[index].Draw();
-            cout<<endl;
-        }
-    }
+
     void removeCard(int index){
         for(int i=index;i<n-1;i++)
             arrCards[i]=arrCards[i+1];
         n--;
     }
+
+    int HitMe();
+    void showHand(Player p);
 };
 
+int CardDeck::HitMe(){
+    srand(time(NULL));
+    int index=rand()%n;
+    if(index > n || index < 0 ){
+        cout<<"Error.";
+        exit(0);
+    }
+    cout<<"You drew: ";
+    printOne(index);
+    removeCard(index);
+    cout<<arrCards[index].value<<endl<<endl;
+    return arrCards[index].value;    
+}
 
+//1void CardDeck::showHand(Player p){
+  //  for(int i=0;i<cards.size();i++)
+//}
+
+void Game(){
+    Player player,dealer;
+    CardDeck Deck;
+    int opt;
+    Deck.createDeck();
+    while(1){
+        cout<<"Would you like to draw a card or to stand? "<<endl<<"1 - draw , 2 - show hand, 3 - stand"<<endl;
+        cin>>opt;
+        if(opt==1){
+            player.sum+=Deck.HitMe();
+            cout<<player.sum<<endl;
+        }
+        else if(opt==2)
+            break;
+        else
+            break; 
+        if(player.sum>BUST){
+          cout<<"YOU BUSTED! "<<endl<<"Your total was: "<<player.sum;
+          player.losses++;
+          break;
+        }
+    }
+    
+}
 
 
 int main(){
-    CardDeck deck;
-    deck.createDeck();
-    //deck.PrintAll();
-    //deck.DrawAll();
-    deck.printOne(23);
-    deck.drawOne(23);
+    Game();
     return 0;
 }
