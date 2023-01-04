@@ -117,15 +117,11 @@ struct CardDeck{
     }
 
     void PrintAll(){
-        for(int i=(int)Suits::CLUBS;i<=(int)Suits::DIAMONDS;i++){
-            for(int j=(int)Names::ACE;j<=(int)Names::KING;j++){
-                int index=(13*i)+j-1;
+        for(int index=0;index<52;index++){
                 arrCards[index].PrintName();
                 cout<< " of ";
                 arrCards[index].PrintSuit();
                 cout<<endl;
-            }
-            cout<<endl;
         }
     }
     void DrawAll(){
