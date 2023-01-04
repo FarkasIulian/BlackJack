@@ -1,6 +1,6 @@
 #include <iostream>
 using namespace std;
-
+// just a quick example of the card drawing algorithm
 
 void Draw(){
     cout<<" _____ "<<endl;
