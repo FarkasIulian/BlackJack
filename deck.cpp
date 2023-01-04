@@ -2,12 +2,14 @@
 #include <time.h>
 #include <vector>
 #include <stdlib.h>
-#include<conio.h>
+#include <conio.h>
 
 using namespace std;
 //creating a deck of cards, assuming cards are placed on 4 rows of 13 columns each
 
 #define BUST 21
+int win=0,loss=0;
+
 
 enum class Suits{
     CLUBS,
@@ -97,8 +99,6 @@ struct Card{
 
 struct Player{
     int sum=0;
-    int wins;
-    int losses;
     vector <int> cards;
 };
 
@@ -125,7 +125,6 @@ struct CardDeck{
                 // the position of the card is 13 * the row that we want and to that we add the column of the selected card,
                 // we subtract one because the ACE starts at 1 not at 0 in the enum.
                 arrCards[index]=c;
-                //cout<<(int)c.name<<" of "<<(int)c.suit<<endl;
             }
         }
     }
@@ -159,7 +158,10 @@ vector <int> CardDeck::HitMe(){
         cout<<"Error.";
         exit(0);
     }
-    cout<<"You drew: ";
+    if(n==52)
+        cout<<"You start with: ";
+    else
+        cout<<"You drew: ";
     printOne(index);
     value.push_back(arrCards[index].value);
     value.push_back(index);
@@ -172,46 +174,91 @@ void CardDeck::showHand(Player p){
     aux.createDeck();
     for(int i=0;i<p.cards.size();i++){
         aux.drawOne(p.cards[i]);
+        cout<<endl;
         aux.printOne(p.cards[i]);
         aux.removeCard(p.cards[i]);
     }
-
 }
 
 void Game(){
     Player player,dealer;
     CardDeck Deck;
-    int opt;
+    int opt,first=0;
     vector <int> aux;
     Deck.createDeck();
+    aux=Deck.HitMe();  
+    player.cards.push_back(aux[1]); 
+    player.sum+=aux[0];
     while(1){
-        system("CLS");
         cout<<"Would you like to draw a card or to stand? "<<endl<<"1 - draw , 2 - show hand, 3 - stand"<<endl;
         cin>>opt;
         if(opt==1){
             aux=Deck.HitMe();  
             player.cards.push_back(aux[1]); 
-            player.sum+=aux[0];
+            if(aux[0]==11 && player.sum+aux[0]>21)
+                player.sum+=1;
+            else
+                player.sum+=aux[0];
             cout<<"Your current total is: "<<player.sum<<endl;
-            getch();
         }
         else if(opt==2){
+            system("CLS");
+            cout<<"Your cards are: "<<endl;
             Deck.showHand(player);
+            cout<<"The sum of your cards is: "<<player.sum<<endl;
             cout<<"Press any key to get back to the game! "<<endl;
             getch();
         }
-        else
-            break; 
-        //if(player.sum>BUST){
-          //cout<<"YOU BUSTED! "<<endl<<"Your total was: "<<player.sum;
-          //player.losses++;
-          //break;
-        //}
+        else{
+            system("CLS");
+            cout<<"Your turn is over!"<<endl<<"DEALEARS TURN: "<<endl;
+            while(1){
+                if(dealer.sum+6 < BUST){
+                    aux=Deck.HitMe();
+                    dealer.cards.push_back(aux[1]); 
+                    if(aux[0]==11 && dealer.sum+aux[0]>21)
+                        dealer.sum+=1;
+                    else
+                        dealer.sum+=aux[0];
+                    cout<<"Dealer current total is: "<<dealer.sum<<endl;
+                    if(dealer.sum>BUST){
+                        cout<<"DEALER BUSTED! "<<endl<<"Dealer total was: "<<dealer.sum;
+                        win++;
+                        break;
+                    }
+                }
+                else
+                    break;
+            }
+            if(player.sum>dealer.sum){
+                cout<<"YOU WON!"<<endl;
+                win++;
+            }
+            else{
+                cout<<"YOU LOST!"<<endl;
+                loss++;
+            }
+            break;
+        } 
+        if(player.sum>BUST){
+          cout<<"YOU BUSTED! "<<endl<<"Your total was: "<<player.sum<<endl;
+          loss++;
+          break;
+        }
     }
+    cout<<"YOU HAVE "<<win<<" WINS AND "<<loss<<" LOSSES"<<endl;  
+    cout<<"Do you want to play again?"<<endl;
+    cout<<"1 - yes , 0 - no"<<endl;
+    cin>>opt;
+    if(opt){
+        system("CLS");
+        Game();
+    }
+    else return;
 }
-
 
 int main(){
     Game();
+    system("CLS");
     return 0;
 }
