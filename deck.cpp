@@ -92,14 +92,16 @@ struct Card{
 
 struct CardDeck{
     Card arrCards[52];
-    
+    int n=52;
     void createDeck(){
         for(int i=(int)Suits::CLUBS;i<=(int)Suits::DIAMONDS;i++){
             for(int j=(int)Names::ACE;j<=(int)Names::KING;j++){
                 Card c;
                 c.suit=(Suits)i;
                 c.name=(Names)j;
-                if(c.name == Names::JACK)
+                if(c.name == Names::ACE)
+                    c.value=11;
+                else if(c.name == Names::JACK)
                     c.value=10;
                 else if(c.name==Names::QUEEN)
                     c.value=10;
@@ -116,27 +118,46 @@ struct CardDeck{
         }
     }
 
+    void printOne(int index){
+        cout<<arrCards[index].value;
+        arrCards[index].PrintName();
+        cout<<" of ";
+        arrCards[index].PrintSuit();
+        cout<<endl;
+    }
+    void drawOne(int index){
+        arrCards[index].Draw();
+    }
     void PrintAll(){
-        for(int index=0;index<52;index++){
-                arrCards[index].PrintName();
-                cout<< " of ";
-                arrCards[index].PrintSuit();
-                cout<<endl;
+        for(int index=0;index<n;index++){
+            arrCards[index].PrintName();
+            cout<< " of ";
+            arrCards[index].PrintSuit();
+            cout<<endl;
         }
     }
     void DrawAll(){     
-        for(int index=0;index<52;index++){
+        for(int index=0;index<n;index++){
             arrCards[index].Draw();
             cout<<endl;
         }
     }
+    void removeCard(int index){
+        for(int i=index;i<n-1;i++)
+            arrCards[i]=arrCards[i+1];
+        n--;
+    }
 };
+
+
 
 
 int main(){
     CardDeck deck;
     deck.createDeck();
     //deck.PrintAll();
-    deck.DrawAll();
+    //deck.DrawAll();
+    deck.printOne(23);
+    deck.drawOne(23);
     return 0;
 }
