@@ -1,6 +1,9 @@
 #include <iostream>
 #include <time.h>
 #include <vector>
+#include <stdlib.h>
+#include<conio.h>
+
 using namespace std;
 //creating a deck of cards, assuming cards are placed on 4 rows of 13 columns each
 
@@ -144,11 +147,12 @@ struct CardDeck{
         n--;
     }
 
-    int HitMe();
+    vector <int> HitMe();
     void showHand(Player p);
 };
 
-int CardDeck::HitMe(){
+vector <int> CardDeck::HitMe(){
+    vector <int> value;
     srand(time(NULL));
     int index=rand()%n;
     if(index > n || index < 0 ){
@@ -157,38 +161,53 @@ int CardDeck::HitMe(){
     }
     cout<<"You drew: ";
     printOne(index);
+    value.push_back(arrCards[index].value);
+    value.push_back(index);
     removeCard(index);
-    cout<<arrCards[index].value<<endl<<endl;
-    return arrCards[index].value;    
+    return value;
 }
 
-//1void CardDeck::showHand(Player p){
-  //  for(int i=0;i<cards.size();i++)
-//}
+void CardDeck::showHand(Player p){
+    CardDeck aux;
+    aux.createDeck();
+    for(int i=0;i<p.cards.size();i++){
+        aux.drawOne(p.cards[i]);
+        aux.printOne(p.cards[i]);
+        aux.removeCard(p.cards[i]);
+    }
+
+}
 
 void Game(){
     Player player,dealer;
     CardDeck Deck;
     int opt;
+    vector <int> aux;
     Deck.createDeck();
     while(1){
+        system("CLS");
         cout<<"Would you like to draw a card or to stand? "<<endl<<"1 - draw , 2 - show hand, 3 - stand"<<endl;
         cin>>opt;
         if(opt==1){
-            player.sum+=Deck.HitMe();
-            cout<<player.sum<<endl;
+            aux=Deck.HitMe();  
+            player.cards.push_back(aux[1]); 
+            player.sum+=aux[0];
+            cout<<"Your current total is: "<<player.sum<<endl;
+            getch();
         }
-        else if(opt==2)
-            break;
+        else if(opt==2){
+            Deck.showHand(player);
+            cout<<"Press any key to get back to the game! "<<endl;
+            getch();
+        }
         else
             break; 
-        if(player.sum>BUST){
-          cout<<"YOU BUSTED! "<<endl<<"Your total was: "<<player.sum;
-          player.losses++;
-          break;
-        }
+        //if(player.sum>BUST){
+          //cout<<"YOU BUSTED! "<<endl<<"Your total was: "<<player.sum;
+          //player.losses++;
+          //break;
+        //}
     }
-    
 }
 
 
